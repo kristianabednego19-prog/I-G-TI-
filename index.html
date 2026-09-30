@@ -123,7 +123,6 @@
         const SUPABASE_URL = 'https://uxmaxhusihcolqksmiyf.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_cjdPtrqpbMYSxAEGaEW41Q_q74K_-nI';
         
-        // Menggunakan nama 'supabaseClient' agar tidak bentrok dengan fungsi global CDN
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentStudentId = localStorage.getItem('ingetin_student_id');
@@ -177,7 +176,8 @@
 
             if (!course || !title || !deadline) return alert('Lengkapi semua data tugas!');
 
-            const deadlineISO = new Date(deadline).toISOString();
+            // Diperbaiki: Mengirim nilai waktu lokal secara langsung tanpa konversi .toISOString()
+            const deadlineLocal = deadline.length === 16 ? deadline + ':00' : deadline;
 
             const { error } = await supabaseClient.from('tasks').insert([
                 {
@@ -185,7 +185,7 @@
                     whatsapp_number: currentWhatsapp,
                     course: course,
                     title: title,
-                    deadline: deadlineISO
+                    deadline: deadlineLocal
                 }
             ]);
 
